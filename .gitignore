@@ -1,0 +1,11 @@
+[Tt]humb.db
+generated
+pybrain
+target
+*.pyc
+.idea
+*.exe
+*.class
+*.html
+*.sublime-workspace
+
