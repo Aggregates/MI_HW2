@@ -1,17 +1,14 @@
-import numpy as np
+import numpy
 import random
-#from enum import Enum
 
 class Direction:
-		left = 1
-		right = 2
-		up = 3
-		down = 4
+		LEFT  = 1
+		RIGHT = 2
+		UP    = 3
+		DOWN  = 4
 		
 class Game(object):
 	NUM_INIT = 2
-
-	
 
 	def __init__(self, size=5, testing=False):
 		self.size = size
@@ -22,7 +19,7 @@ class Game(object):
 		self.num_moves = 0
 		self.testing = testing
 
-		self.state = np.zeros((self.size, self.size))
+		self.state = numpy.zeros( (self.size, self.size) )
 
 		if not self.testing:
 			for i in range(Game.NUM_INIT):
@@ -31,23 +28,26 @@ class Game(object):
 	def get(self, cell):
 		if not self.within_bounds(cell):
 			raise IndexError
-		return self.state[cell['y']][cell['x']]
+		return self.state[ cell['y'] ][ cell['x'] ]
 
 	def set(self, cell, value):
 		if not self.within_bounds(cell):
 			raise IndexError
-		self.state[cell['y']][cell['x']] = value
+		self.state[ cell['y'] ][ cell['x'] ] = value
+
+	def within_bounds(self, cell):
+		return 0 <= cell['x'] < self.size and 0 <= cell['y'] < self.size
 
 	def move(self, direction):
 		vec = None
-		if direction == Direction.left:
-			vec = {'x': -1, 'y': 0}
-		elif direction == Direction.right:
-			vec = {'x': 1, 'y': 0}
-		elif direction == Direction.up:
-			vec = {'x': 0, 'y': -1}
-		elif direction == Direction.down:
-			vec = {'x': 0, 'y': 1}
+		if direction == Direction.LEFT:
+			vec = { 'x': -1, 'y': 0 }
+		elif direction == Direction.RIGHT:
+			vec = { 'x': 1, 'y': 0 }
+		elif direction == Direction.UP:
+			vec = { 'x': 0, 'y': -1 }
+		elif direction == Direction.DOWN:
+			vec = { 'x': 0, 'y': 1 }
 		else:
 			raise 'Invalid Direction'
 
@@ -59,24 +59,29 @@ class Game(object):
 
 		for x in traversals['x']:
 			for y in traversals['y']:
-				cell = {'x': x, 'y': y}
+				cell = { 'x': x, 'y': y }
 				cell_value = self.get(cell)
+				
 				if cell_value > 0:
 					positions = self.find_farthest_position(cell, vec)
 					next = positions['next']
 					farthest = positions['farthest']
 					# print 'checking', cell, farthest, next
 					valid = self.within_bounds(next)
+					
 					if valid:
 						next_value = self.get(next)
+					
 					if valid and next_value == cell_value:
 						# print 'merging', cell, next
 						new_value = next_value * 2
+						
 						if new_value > self.max_block:
 							self.max_block = new_value
 						self.set(cell, 0)
 						self.set(next, new_value)
 						self.score += new_value
+						
 						if new_value == 65536:
 							self.won = True
 							self.over = True
@@ -96,6 +101,7 @@ class Game(object):
 
 			if not self.is_moves_available():
 				self.over = True
+		
 		return moved
 
 	def is_moves_available(self):
@@ -107,11 +113,14 @@ class Game(object):
 				cell = {'x': x, 'y': y}
 				cell_value = self.get(cell)
 				right_cell = {'x': x + 1, 'y': y}
+				
 				if self.within_bounds(right_cell):
 					right_cell_value = self.get(right_cell)
 					if cell_value == right_cell_value:
 						return True
+				
 				down_cell = {'x': x, 'y': y + 1}
+				
 				if self.within_bounds(down_cell):
 					down_cell_value = self.get(down_cell)
 					if cell_value == down_cell_value:
@@ -146,7 +155,6 @@ class Game(object):
 	def equal(self, first, second):
 		return first['x'] == second['x'] and first['y'] == second['y']
 
-
 	def build_traversals(self, vec):
 		traversals = {'x': [], 'y': []}
 		for i in range(self.size):
@@ -166,18 +174,14 @@ class Game(object):
 		previous = None
 		while True:
 			previous = cell
-			cell = {'x': previous['x'] + vec['x'], 'y': previous['y'] + vec['y']}
+			cell = { 'x': previous['x'] + vec['x'], 'y': previous['y'] + vec['y'] }
 			if not self.within_bounds(cell) or not self.cell_available(cell):
 				break
 
 		return {
-		'farthest': previous,
-		'next': cell
+			'farthest': previous,
+			'next': cell
 		}
-
-	def within_bounds(self, cell):
-		return 0 <= cell['x'] < self.size and 0 <= cell['y'] < self.size
 
 	def cell_available(self, cell):
 		return self.state[cell['y']][cell['x']] == 0
-
