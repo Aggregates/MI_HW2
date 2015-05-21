@@ -12,7 +12,7 @@ import matplotlib.pyplot as plot
 
 LEARNING_EPOCHS = 20 # Learning time
 GAMES_PER_EPOCH = 25 # Batch size for Q Learner
-GAMMA = 0.9
+GAMMA = 0.5
 
 def train():
 
