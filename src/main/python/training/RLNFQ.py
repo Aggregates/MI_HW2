@@ -10,9 +10,9 @@ from pybrain.rl.environments import Task
 import sys, time
 import matplotlib.pyplot as plot
 
-LEARNING_EPOCHS = 20 # Learning time
-GAMES_PER_EPOCH = 25 # Batch size for Q Learner
-GAMMA = 0.5
+LEARNING_EPOCHS = 20  # Learning time
+GAMES_PER_EPOCH = 25  # Batch size for Q Learner
+GAMMA = 0.99999
 
 def train():
 

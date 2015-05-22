@@ -45,4 +45,4 @@ def run():
     plot.show()
 
 if __name__ == "__main__":
-    run();
+    run()
