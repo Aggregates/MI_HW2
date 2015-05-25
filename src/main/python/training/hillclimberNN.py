@@ -39,9 +39,11 @@ def train():
 
     # Train the network
     meanScores = []
+    print "Starting HillClimberNN"
     for i in xrange(LEARNING_EPOCHS):
-        print "Training Iteration", i
         experiment.doEpisodes(GAMES_PER_EPOCH)
+        print "Training Iteration", i, "With mean score ", task.meanScore, "Max block achieved ", environment.maxGameBlock
+        environment.maxGameBlock = 0
         meanScores.append(task.meanScore)
 
     params = {"learningEpochs": LEARNING_EPOCHS, "gamesPerEpoch": GAMES_PER_EPOCH, "hiddenNodes": HIDDEN_NODES }

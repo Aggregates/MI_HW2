@@ -3,6 +3,7 @@ from game import Game, Direction
 from pybrain.rl.environments.episodic import EpisodicTask
 from pybrain.utilities import Named
 
+
 import numpy
 
 class TwentyFortyEightEnvironment(EpisodicTask, Named):
@@ -19,6 +20,7 @@ class TwentyFortyEightEnvironment(EpisodicTask, Named):
     resetOnSuccess = True
     done = 0
     game = None
+    maxGameBlock = 0
 
     def __init__(self):
         self.nActions = len(self.action_list)
@@ -45,6 +47,7 @@ class TwentyFortyEightEnvironment(EpisodicTask, Named):
             lastgs = self.game.score
             
             # Try all possible moves
+            # Alphe-Beta or Minimax goes here to choose a better move rather than just the first one it can.
             for i in xrange(4):
                 actionToSelect = (int(action[0]) + i ) % 4
                 moved = self.game.move( self.action_list[actionToSelect] )
@@ -74,6 +77,8 @@ class TwentyFortyEightEnvironment(EpisodicTask, Named):
         
     def isFinished(self):
         if self.done > 2 or self.game.won and self.resetOnSuccess:
+            if self.game.max_block > self.maxGameBlock:
+                self.maxGameBlock = self.game.max_block
             self.lastScore = self.cumulativeReward
             self.meanScore = (0.99 * self.meanScore) + (0.01 * self.cumulativeReward)
             self.StartEpisode()

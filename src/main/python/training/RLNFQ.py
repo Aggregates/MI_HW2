@@ -38,7 +38,7 @@ def train():
     meanScores = []
     for i in xrange(LEARNING_EPOCHS):
         experiment.doEpisodes(GAMES_PER_EPOCH)
-        print "Iteration ", i, " With mean score ", task.meanScore
+        print "Iteration ", i, " With mean score ", task.meanScore, "Max block achieved ", environment.maxGameBlock
         meanScores.append(task.meanScore)
         agent.learn()
         agent.reset()
