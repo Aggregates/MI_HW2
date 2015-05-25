@@ -11,7 +11,7 @@ import sys, time
 import matplotlib.pyplot as plot
 
 # Constants
-LEARNING_EPOCHS = 30 # Learning time
+LEARNING_EPOCHS = 50 # Learning time
 GAMES_PER_EPOCH = 50 # Batch size
 HIDDEN_NODES = 30
 

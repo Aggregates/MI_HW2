@@ -14,8 +14,6 @@ COMP3330 - Machine Intelligence - HW2 Technical Report
 
 `TODO`
 
-* Review previous AI solutions and literature for variants of 2048 and compare to solutions for similar games
-* 1000 Words (~2 Pages)
 
 # Question 2 - 65536 AI #
 

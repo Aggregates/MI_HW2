@@ -36,7 +36,7 @@ def run():
 
     uniqueFileName = path.normpath(path.join(generated_dir2, "data.pkl"))
     writeMode = 'wb' # Write Bytes
-    pickle.dump(network, open(uniqueFileName, writeMode))
+    pickle.dump(experiment2, open(uniqueFileName, writeMode))
 
     # Show the mean scores
     plot.plot(meanScores1)
