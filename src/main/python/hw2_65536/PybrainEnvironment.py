@@ -47,7 +47,7 @@ class TwentyFortyEightEnvironment(EpisodicTask, Named):
             lastgs = self.game.score
             
             # Try all possible moves
-            # Alphe-Beta or Minimax goes here to choose a better move rather than just the first one it can.
+            # Alpha-Beta or Minimax goes here to choose a better move rather than just the first one it can.
             for i in xrange(4):
                 actionToSelect = (int(action[0]) + i ) % 4
                 moved = self.game.move( self.action_list[actionToSelect] )
@@ -84,3 +84,18 @@ class TwentyFortyEightEnvironment(EpisodicTask, Named):
             self.StartEpisode()
             return True
         return False
+
+    def alphaBeta(self):
+        direction = 0
+
+        return direction
+
+    def heuristicScore(self):
+
+        score = 0
+        return score
+
+    def clusterScore(self):
+        clusterScore = 0
+
+        return clusterScore
