@@ -49,10 +49,23 @@ each tile from the average of the differences between surrounding tiles. Thus wh
 is a favourable position resulting in a lower clustering score and less of a "penalty" to the heuristic calculation. 
 An example of a low clustering score can be seen in the position below.
 
-|:---:|:----:|:---:|  
-|8|16|4|
-|6|8|2|
-|0|4|0|
+<table>
+  <tr>
+    <td>8</td>
+    <td>16</td> 
+    <td>4</td>
+  </tr>
+  <tr>
+    <td>6</td>
+    <td>8</td> 
+    <td>2</td>
+  </tr>
+    <tr>
+    <td>0</td>
+    <td>4</td> 
+    <td>0</td>
+  </tr>
+</table>  
 
 Other heuristics examined include:
  
