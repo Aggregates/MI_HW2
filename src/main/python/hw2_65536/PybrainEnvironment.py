@@ -49,11 +49,10 @@ class TwentyFortyEightEnvironment(EpisodicTask, Named):
             
             # Try all possible moves
             # Alpha-Beta or Minimax goes here to choose a better move rather than just the first one it can.
-            for i in xrange(4):
-                actionToSelect = (int(action[0]) + i ) % 4 #alphaBeta to choose best direction
-                moved = self.game.move( self.action_list[actionToSelect] )
-                if moved:
-                    break
+            #actionToSelect = self.alphaBeta(5, 1) #alphaBeta to choose best direction
+            actionToSelect = ai.nextMove()
+            moved = self.game.move( self.action_list[actionToSelect] )
+
             
             if not moved or self.game.won:
                 self.r = moved * -2.0
@@ -86,31 +85,7 @@ class TwentyFortyEightEnvironment(EpisodicTask, Named):
             return True
         return False
 
-    def alphaBeta(self, state, depth, max, min, player):
-        direction = 0
-        bestscore = 0
-        state = self.game.state
-        #if self.isFinished():
+    def nextMove(self, recursion_depth=3):
+        m,s = self.nextMoveRecur(recursion_depth,recursion_depth)
+        return m
 
-        if depth==0:
-            bestscore = self.heuristicScore()
-
-        return direction
-
-    # calculate heuristic score based on game score, number of empty cells and clustering score
-    def heuristicScore(self):
-        score = self.game.score+(log(self.game.score*self.noEmptyCells()))-self.clusterScore()
-        return max(score,self.game.score)#ensure a positive result returned
-
-    def clusterScore(self):
-        clusterScore = 0
-
-        return clusterScore
-
-    def noEmptyCells(self):
-        noEmptyCells = 0
-        available = self.game.get_available_cells()
-        for x in range(available.__sizeof__()):
-            if x==0:
-                noEmptyCells=noEmptyCells+1
-        return noEmptyCells
