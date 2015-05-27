@@ -49,7 +49,6 @@ each tile from the average of the differences between surrounding tiles. Thus wh
 is a favourable position resulting in a lower clustering score and less of a "penalty" to the heuristic calculation. 
 An example of a low clustering score can be seen in the position below.
 
-
 |:---:|:----:|:---:|  
 |8|16|4|
 |6|8|2|
@@ -96,3 +95,16 @@ local maximum and moving forward.
 * High Level pseudocode of changes to standard algorithms
 * Two working agents with execute instructions (3 Marks)
 * Conduct comparison of agents and report and discuss their outcome
+
+
+# References #
+1. Nicola Pezzotti, *An Artificial Intelligence for the 2048 Game*, [http://diaryofatinker.blogspot.it/2014/03/an-artificial-intelligence-for-2048-game.html],
+Diary of a Tinker, 2014
+2. Lee Yiyuan, *2048 AI - The Intelligent Bot*, [https://codemyroad.wordpress.com/2014/05/14/2048-ai-the-intelligent-bot/],
+Code My Road, 2014
+3. Philip Rodgers & John Levine, *An Investigation into 2048 AI Strategies*, [http://kghost.de/cig_proc/aux/paper_106.pdf],
+University of Strathclyde, 2014
+4. Vasilis Vryniotis, *Using Artificial Intelligence to Solve The 2048 Game*, [http://blog.datumbox.com/using-artificial-intelligence-to-solve-the-2048-game-java-code/],
+DatumBox, 2014
+5. Various Contributors, *What is the optimal algorithm for the game 2048?*, [http://stackoverflow.com/questions/22342854/what-is-the-optimal-algorithm-for-the-game-2048],
+StackOverflow, 2015
