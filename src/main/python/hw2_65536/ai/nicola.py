@@ -1,7 +1,7 @@
 __author__ = 'Rob'
 
 from math import log
-from game import Game, Direction
+from hw2_65536.game import Game, Direction
 from pybrain.rl.environments.episodic import EpisodicTask
 from pybrain.utilities import Named
 from copy import deepcopy

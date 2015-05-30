@@ -2,8 +2,6 @@ import random
 
 class MonteCarlo(object):
 
-    def __init__():
-
     def nextMove():
         '''
         Decide which direction to move in.

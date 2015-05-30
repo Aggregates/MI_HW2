@@ -3,7 +3,7 @@ from game import Game, Direction
 from pybrain.rl.environments.episodic import EpisodicTask
 from pybrain.utilities import Named
 from math import log
-from ai.randomiser import *
+from ai import *
 
 import numpy
 
