@@ -43,7 +43,7 @@ class TwentyFortyEightEnvironment(EpisodicTask, Named):
         if len(action) == 4:
             action = numpy.argsort(action)
         
-        if self.game.won or self.done:
+        if self.game.won or self.game.over:
             self.done += 1            
         else:
             lastgs = self.game.score
@@ -80,7 +80,7 @@ class TwentyFortyEightEnvironment(EpisodicTask, Named):
         self.done = 0
         
     def isFinished(self):
-        if self.done > 2 or self.game.won and self.resetOnSuccess:
+        if self.done > 20 or self.game.over or self.game.won and self.resetOnSuccess:
             if self.game.max_block > self.maxGameBlock:
                 self.maxGameBlock = self.game.max_block
             self.lastScore = self.cumulativeReward
