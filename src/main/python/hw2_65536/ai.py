@@ -13,7 +13,7 @@ class ai(object):
             bestScore = -1.
             bestMove = 0
 
-            for m in range(1,5):
+            for m in range(1,5): # 1 to 4 (Game.Direction)
                 if(board.validMove(m)):
                     newBoard = copy.deepcopy(board)
                     newBoard.move(self.action_list[m] )
