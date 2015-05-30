@@ -1,4 +1,5 @@
 from hw2_65536.game import *
+from math import *
 
 class AlphaBeta(object):
 
@@ -41,6 +42,26 @@ class AlphaBeta(object):
 
     def clusterScore(self):
         clusterScore = 0
+        neighbours = (-1, 0, 1)
+        for i in range(5):
+            for j in range(5):
+                if self.game.state[i][j] == 0:
+                    continue
+                numOfNeighbours = 0
+                sum = 0
+                for k in neighbours:
+                    x = i + k
+                    if x < 0 or x > 5:
+                        continue
+                    for l in neighbours:
+                        y = j + l
+                        if y < 0 or y > 5:
+                            continue
+                        if self.game.state[x][y] > 0:
+                            numOfNeighbours+=1
+                            sum = abs(self.game.state[i][j]-self.game.state[x][y])
+
+                clusterScore += sum/numOfNeighbours
 
         return clusterScore
 
