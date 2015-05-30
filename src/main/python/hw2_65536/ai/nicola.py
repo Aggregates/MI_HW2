@@ -8,7 +8,7 @@ from copy import deepcopy
 
 import numpy
 
-class ai(object):
+class Nicola(object):
 
         def __init__(self, gameBoard):
             self.board = gameBoard
