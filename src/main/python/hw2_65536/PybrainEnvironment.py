@@ -3,7 +3,7 @@ from game import Game, Direction
 from pybrain.rl.environments.episodic import EpisodicTask
 from pybrain.utilities import Named
 from math import log
-
+from ai import *
 
 import numpy
 
@@ -34,6 +34,7 @@ class TwentyFortyEightEnvironment(EpisodicTask, Named):
         self.game = Game()
         self.done = 0
         self.startState = self.game.state
+        self.ai = ai(self.game)
     
     def getObservation(self):
         return self.game.state.flatten()
@@ -49,9 +50,10 @@ class TwentyFortyEightEnvironment(EpisodicTask, Named):
             
             # Try all possible moves
             # Alpha-Beta or Minimax goes here to choose a better move rather than just the first one it can.
-            actionToSelect = self.alphaBeta(5, 1) #alphaBeta to choose best direction
-            #actionToSelect = self.nextMove()
-            moved = self.game.move( self.action_list[actionToSelect] )
+            #actionToSelect = self.alphaBeta(5, 1) #alphaBeta to choose best direction
+            actionToSelect = self.ai.nextMove()
+            #print actionToSelect
+            moved = self.game.move( self.action_list[actionToSelect - 1] )
 
             
             if not moved or self.game.won:
@@ -84,10 +86,6 @@ class TwentyFortyEightEnvironment(EpisodicTask, Named):
             self.StartEpisode()
             return True
         return False
-
-    def nextMove(self, recursion_depth=3):
-        m,s = self.nextMoveRecur(recursion_depth,recursion_depth)
-        return m
 
     def alphaBeta(self, depth, player):
         direction = 0

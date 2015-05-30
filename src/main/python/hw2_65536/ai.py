@@ -4,46 +4,101 @@ from math import log
 from game import Game, Direction
 from pybrain.rl.environments.episodic import EpisodicTask
 from pybrain.utilities import Named
+from copy import deepcopy
 
 import numpy
 
 class ai(object):
 
-        def nextMoveRecur(self,depth,maxDepth,base=0.9):
+        def __init__(self, gameBoard):
+            self.board = gameBoard
+
+        # The following methods have been taken from 
+        # https://github.com/Nicola17/term2048-AI
+
+        def getColumn(self, col):
+         return [self.board.get({"x":col, "y":i}) for i in range(self.board.size)]
+
+        def getRow(self, row):
+             return self.board.state[row]
+
+        def validMove(self, board, direction):
+            boardSizeAsRange = xrange(0, self.board.size)
+
+            if direction == Direction.UP or direction == Direction.DOWN:
+                for x in boardSizeAsRange:
+                    col = self.getColumn(x)
+                    for y in boardSizeAsRange:
+                        if(y < self.board.size-1 and col[y] == col[y+1] and col[y]!=0):
+                            return True
+                        if(direction == Direction.UP and y > 0 and col[y] == 0 and col[y-1]!=0):
+                            return True
+                        if(direction == Direction.DOWN and y < self.board.size-1 and col[y] == 0 and col[y+1]!=0):
+                            return True        
+            
+            if direction == Direction.LEFT or direction == Direction.RIGHT:
+                for y in boardSizeAsRange:
+                    row = self.getRow(y)
+                    for x in boardSizeAsRange:
+                        if(x < self.board.size-1 and row[x] == row[x+1] and row[x]!=0):
+                            return True
+                        if(direction == Direction.LEFT and x > 0 and row[x] == 0 and row[x-1]!=0):
+                            return True
+                        if(direction == Direction.RIGHT and x < self.board.size-1 and row[x] == 0 and row[x+1]!=0):
+                            return True        
+            return False
+
+        def nextMove(self, recursion_depth=3):
+            bestMove, bestScore = self.nextMoveRecur(self.board, recursion_depth, recursion_depth)
+            return bestMove
+
+        def nextMoveRecur(self, board, depth,maxDepth,base=0.9):
             bestScore = -1.
             bestMove = 0
 
+            #print "My Best Score (Start): ", bestScore
+
             for m in range(1,5): # 1 to 4 (Game.Direction)
-                if(board.validMove(m)):
-                    newBoard = copy.deepcopy(board)
-                    newBoard.move(self.action_list[m] )
-                    score = self.evaluate(newBoard)
+                if(self.validMove(self.board, m)):
+                    newBoard = deepcopy(board)
+                    newBoard.move(m)
+                    score, tile = self.evaluate(newBoard)
+                    #print "Evaluated Score: ", score
 
-                if depth != 0:
-                    my_m,my_s = nextMoveRecur(newBoard,depth-1,maxDepth)
-                    score += my_s*pow(base,maxDepth-depth+1)
 
-                if(score > bestScore):
-                    bestMove = m
-                    bestScore = score
+                    if depth != 0:
+                        my_move, my_score = self.nextMoveRecur(newBoard,depth-1,maxDepth)
 
-            return (bestMove,bestScore);
+                        multiplier = pow(base,maxDepth-depth+1)
 
-        @staticmethod
-        def evaluate(board,commonRatio=0.25):
+                        #print "My Best Score: ", my_score
+                        #print "Multiplier: ", multiplier
+
+                        score += my_score * multiplier
+                        #print "Calculated Score: ", score
+
+                    if(score > bestScore):
+                        bestMove = m
+                        bestScore = score
+
+            #print "My Best Score (End): ", bestScore
+            return bestMove, bestScore;
+
+        
+        def evaluate(self, board,commonRatio=0.25):
             linearWeightedVal = 0
             invert = False
             weight = 1.
             malus = 0
             criticalTile = (-1,-1)
-            for y in range(0,board.size()):
-                for x in range(0,board.size()):
+            for y in range(0,board.size):
+                for x in range(0,board.size):
                     b_x = x
                     b_y = y
                     if invert:
-                        b_x = board.size() - 1 - x
+                        b_x = board.size - 1 - x
                     #linearW
-                    currVal=board.getCell(b_x,b_y)
+                    currVal=board.get( {"x":b_x, "y":b_y} )
                     if(currVal == 0 and criticalTile == (-1,-1)):
                         criticalTile = (b_x,b_y)
                     linearWeightedVal += currVal*weight
@@ -55,14 +110,14 @@ class ai(object):
             weight = 1.
             malus = 0
             criticalTile2 = (-1,-1)
-            for x in range(0,board.size()):
-                for y in range(0,board.size()):
+            for x in range(0,board.size):
+                for y in range(0,board.size):
                     b_x = x
                     b_y = y
                     if invert:
-                        b_y = board.size() - 1 - y
+                        b_y = board.size - 1 - y
                     #linearW
-                    currVal=board.getCell(b_x,b_y)
+                    currVal=board.get( {"x":b_x, "y":b_y} )
                     if(currVal == 0 and criticalTile2 == (-1,-1)):
                         criticalTile2 = (b_x,b_y)
                     linearWeightedVal2 += currVal*weight
@@ -75,14 +130,14 @@ class ai(object):
             weight = 1.
             malus = 0
             criticalTile3 = (-1,-1)
-            for y in range(0,board.size()):
-                for x in range(0,board.size()):
+            for y in range(0,board.size):
+                for x in range(0,board.size):
                     b_x = x
-                    b_y = board.size() - 1 - y
+                    b_y = board.size - 1 - y
                     if invert:
-                        b_x = board.size() - 1 - x
+                        b_x = board.size - 1 - x
                     #linearW
-                    currVal=board.getCell(b_x,b_y)
+                    currVal=board.get( {"x":b_x, "y":b_y} )
                     if(currVal == 0 and criticalTile3 == (-1,-1)):
                         criticalTile3 = (b_x,b_y)
                     linearWeightedVal3 += currVal*weight
@@ -94,14 +149,14 @@ class ai(object):
             weight = 1.
             malus = 0
             criticalTile4 = (-1,-1)
-            for x in range(0,board.size()):
-                for y in range(0,board.size()):
-                    b_x = board.size() - 1 - x
+            for x in range(0,board.size):
+                for y in range(0,board.size):
+                    b_x = board.size - 1 - x
                     b_y = y
                     if invert:
-                        b_y = board.size() - 1 - y
+                        b_y = board.size - 1 - y
                     #linearW
-                    currVal=board.getCell(b_x,b_y)
+                    currVal=board.get( {"x":b_x, "y":b_y} )
                     if(currVal == 0 and criticalTile4 == (-1,-1)):
                         criticalTile4 = (b_x,b_y)
                     linearWeightedVal4 += currVal*weight
@@ -114,14 +169,14 @@ class ai(object):
             weight = 1.
             malus = 0
             criticalTile5 = (-1,-1)
-            for y in range(0,board.size()):
-                for x in range(0,board.size()):
+            for y in range(0,board.size):
+                for x in range(0,board.size):
                     b_x = x
                     b_y = y
                     if invert:
-                        b_x = board.size() - 1 - x
+                        b_x = board.size - 1 - x
                     #linearW
-                    currVal=board.getCell(b_x,b_y)
+                    currVal=board.get( {"x":b_x, "y":b_y} )
                     if(currVal == 0 and criticalTile5 == (-1,-1)):
                         criticalTile5 = (b_x,b_y)
                     linearWeightedVal5 += currVal*weight
@@ -133,14 +188,14 @@ class ai(object):
             weight = 1.
             malus = 0
             criticalTile6 = (-1,-1)
-            for x in range(0,board.size()):
-                for y in range(0,board.size()):
+            for x in range(0,board.size):
+                for y in range(0,board.size):
                     b_x = x
                     b_y = y
                     if invert:
-                        b_y = board.size() - 1 - y
+                        b_y = board.size - 1 - y
                     #linearW
-                    currVal=board.getCell(b_x,b_y)
+                    currVal=board.get( {"x":b_x, "y":b_y} )
                     if(currVal == 0 and criticalTile6 == (-1,-1)):
                         criticalTile6 = (b_x,b_y)
                     linearWeightedVal6 += currVal*weight
@@ -153,14 +208,14 @@ class ai(object):
             weight = 1.
             malus = 0
             criticalTile7 = (-1,-1)
-            for y in range(0,board.size()):
-                for x in range(0,board.size()):
+            for y in range(0,board.size):
+                for x in range(0,board.size):
                     b_x = x
-                    b_y = board.size() - 1 - y
+                    b_y = board.size - 1 - y
                     if invert:
-                        b_x = board.size() - 1 - x
+                        b_x = board.size - 1 - x
                     #linearW
-                    currVal=board.getCell(b_x,b_y)
+                    currVal=board.get( {"x":b_x, "y":b_y} )
                     if(currVal == 0 and criticalTile7 == (-1,-1)):
                         criticalTile7 = (b_x,b_y)
                     linearWeightedVal7 += currVal*weight
@@ -172,14 +227,14 @@ class ai(object):
             weight = 1.
             malus = 0
             criticalTile8 = (-1,-1)
-            for x in range(0,board.size()):
-                for y in range(0,board.size()):
-                    b_x = board.size() - 1 - x
+            for x in range(0,board.size):
+                for y in range(0,board.size):
+                    b_x = board.size - 1 - x
                     b_y = y
                     if invert:
-                        b_y = board.size() - 1 - y
+                        b_y = board.size - 1 - y
                     #linearW
-                    currVal=board.getCell(b_x,b_y)
+                    currVal=board.get( {"x":b_x, "y":b_y} )
                     if(currVal == 0 and criticalTile8 == (-1,-1)):
                         criticalTile8 = (b_x,b_y)
                     linearWeightedVal8 += currVal*weight
@@ -209,55 +264,6 @@ class ai(object):
                 linearWeightedVal = linearWeightedVal8
                 criticalTile = criticalTile8
 
-            return maxVal,criticalTile
-
-
-
-
-
-
-
-
-        def alphaBeta(self, depth, player):
-            direction = 0
-            bestscore = 0
-            alpha = 1000000
-            beta = -1000000
-            if self.isFinished():
-                if self.game.won:
-                    bestscore = 100000
-                else:
-                    bestscore = min(self.game.score,1)
-            elif depth==0:
-                bestscore = self.heuristicScore()
-            else:
-                if player==1:
-                    for x in self.action_list:
-                        self.tempState = self.game.state
-                        self.tempState.move(x)
-                        points = self.tempState.score
-                        if (points==0) and (self.tempState==self.game.state):
-                            continue
-                        currentResult = self.alphaBeta(depth-1,0)
-
-                #else:
-
-            return direction
-
-        # calculate heuristic score based on game score, number of empty cells and clustering score
-        def heuristicScore(self):
-            score = self.game.score+(log(self.game.score*self.noEmptyCells()))-self.clusterScore()
-            return max(score,self.game.score)#ensure a positive result returned
-
-        def clusterScore(self):
-            clusterScore = 0
-
-            return clusterScore
-
-        def noEmptyCells(self):
-            noEmptyCells = 0
-            available = self.game.get_available_cells()
-            for x in range(available.__sizeof__()):
-                if x==0:
-                    noEmptyCells=noEmptyCells+1
-            return noEmptyCells
+            #print "Max Value", maxVal
+            #print "critical Tile", criticalTile
+            return maxVal, criticalTile
