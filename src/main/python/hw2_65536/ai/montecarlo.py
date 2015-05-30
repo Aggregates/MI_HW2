@@ -1,29 +1,55 @@
+from copy import deepcopy
+from randomiser import *
 import random
 
 class MonteCarlo(object):
 
-    def __init__(self, target, stepSize):
-        self.state = 0
-        self.targetValue = target
-        self.stepSize = stepSize
-        self.stateValue = 0
+    def __init__(self):
+        self.game = None
+        self.gamesToPlay = 0
 
 
-    def nextMove(self):
+    def nextMove(self, game, gamesToPlay):
         '''
         Decide which direction to move in.
         Chosen direction will be between 1 and 4 (inclusive)
         '''
 
-        direction = random.randint(1,4)
-        return direction
+        # Update the game state
+        self.game = game
+        self.gamesToPlay = gamesToPlay
 
-    def temporalDifference(self):
-        stateValue = self.predictValue(state) + stepSize * (self.targetValue - self.predictValue(state))
+        # Generate the possible outcomes
+        possibleOutcomes = []
+        possibleMoves = [1,2,3,4]
+        for move in possibleMoves:
+            possibleOutcomes.append(self.playNGames(self.gamesToPlay))
+
+        # Select the best outcome
+        bestOutcome = max(possibleOutcomes)
+        print 'Best Outcome: ', bestOutcome
+        for move in possibleMoves:
+            if possibleOutcomes[move-1] == bestOutcome:
+                #print 'SELECTING MOVE: ', move
+                return move
 
 
-    def predictValue(self, state, time):
-        return 1
+    def playNGames(self, numGames):
+        results = []
+        for game in range(numGames):
+            endResult, score, maxBlock = self.playRandomGame()
+            #print '  Game ', game, ' result: ', endResult, ' score: ', score, ' max block: ', maxBlock
+            results.append(maxBlock)
+        return sum(results) / len(results)
 
-if __name__ == "__main__":
-    print nextMove()
+    def playRandomGame(self):
+        rand = Randomiser()
+        tempGame = deepcopy(self.game)
+        while not tempGame.over:
+            randomMove = rand.nextMove(1,4) # Make a random move
+            tempGame.move(randomMove)
+
+        if tempGame.won:
+            return 'WIN', tempGame.score, tempGame.max_block
+        else:
+            return 'LOSE', tempGame.score, tempGame.max_block
