@@ -1,3 +1,4 @@
+#!/usr/bin/python2.7
 # Imports
 from training import hillclimberNN, RLNFQ
 from os import path, makedirs
