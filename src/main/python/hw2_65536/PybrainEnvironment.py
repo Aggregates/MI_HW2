@@ -49,8 +49,8 @@ class TwentyFortyEightEnvironment(EpisodicTask, Named):
             
             # Try all possible moves
             # Alpha-Beta or Minimax goes here to choose a better move rather than just the first one it can.
-            #actionToSelect = self.alphaBeta(5, 1) #alphaBeta to choose best direction
-            actionToSelect = ai.nextMove()
+            actionToSelect = self.alphaBeta(5, 1) #alphaBeta to choose best direction
+            #actionToSelect = self.nextMove()
             moved = self.game.move( self.action_list[actionToSelect] )
 
             
@@ -89,3 +89,46 @@ class TwentyFortyEightEnvironment(EpisodicTask, Named):
         m,s = self.nextMoveRecur(recursion_depth,recursion_depth)
         return m
 
+    def alphaBeta(self, depth, player):
+        direction = 0
+        bestscore = 0
+        alpha = 1000000
+        beta = -1000000
+        if self.isFinished():
+            if self.game.won:
+                bestscore = 100000
+            else:
+                bestscore = min(self.game.score,1)
+        elif depth==0:
+            bestscore = self.heuristicScore()
+        else:
+            if player==1:
+                for x in self.action_list:
+                    self.tempState = self.game
+                    self.tempState.move(x)
+                    points = self.tempState.score
+                    if (points==0) and (self.tempState==self.game):
+                        continue
+                    currentResult = self.alphaBeta(depth-1,0)
+
+            #else:
+
+        return direction
+
+    # calculate heuristic score based on game score, number of empty cells and clustering score
+    def heuristicScore(self):
+        score = self.game.score+(log(self.game.score*self.noEmptyCells()))-self.clusterScore()
+        return max(score,self.game.score)#ensure a positive result returned
+
+    def clusterScore(self):
+        clusterScore = 0
+
+        return clusterScore
+
+    def noEmptyCells(self):
+        noEmptyCells = 0
+        available = self.game.get_available_cells()
+        for x in range(available.__sizeof__()):
+            if x==0:
+                noEmptyCells=noEmptyCells+1
+        return noEmptyCells
