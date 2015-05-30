@@ -36,7 +36,7 @@ class AlphaBeta(object):
 
     # calculate heuristic score based on game score, number of empty cells and clustering score
     def heuristicScore(self):
-        score = self.game.score+(log(self.game.score*self.noEmptyCells()))-self.clusterScore()
+        score = self.game.score+(log(self.game.score*self.numberEmptyCells()))-self.clusterScore()
         return max(score,self.game.score)#ensure a positive result returned
 
     def clusterScore(self):
@@ -44,10 +44,10 @@ class AlphaBeta(object):
 
         return clusterScore
 
-    def noEmptyCells(self):
-        noEmptyCells = 0
+    def numberEmptyCells(self):
+        numberEmptyCells = 0
         available = self.game.get_available_cells()
         for x in range(available.__sizeof__()):
             if x==0:
-                noEmptyCells=noEmptyCells+1
-        return noEmptyCells
+                numberEmptyCells += 1
+        return numberEmptyCells
