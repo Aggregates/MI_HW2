@@ -4,6 +4,7 @@ from pybrain.rl.environments.episodic import EpisodicTask
 from pybrain.utilities import Named
 from math import log
 from ai import *
+from datetime import datetime
 
 import numpy
 
@@ -25,6 +26,7 @@ class TwentyFortyEightEnvironment(EpisodicTask, Named):
     done = 0
     game = None
     maxGameBlock = 0
+    minute = datetime.now().minute
 
     def __init__(self):
         self.nActions = len(self.action_list)
@@ -82,13 +84,19 @@ class TwentyFortyEightEnvironment(EpisodicTask, Named):
             elif GAME_TYPE==4:
                 actionToSelect = self.ai.nextMove(1,4)
             elif GAME_TYPE==5:
-                actionToSelect = self.ai.nextMove(4)
+                actionToSelect = self.ai.nextMove(2)
                 
             #print actionToSelect
             #print 'ACTION TO SELECT: ', actionToSelect
             moved = self.game.move( self.action_list[actionToSelect - 1] )
-
             
+            if(self.minute != datetime.now().minute):
+                self.printBoard()
+                self.minute = datetime.now().minute
+
+            if(self.game.max_block > self.maxGameBlock):
+                self.maxGameBlock = self.game.max_block
+                print "Max Block:", self.maxGameBlock
             if not moved or self.game.won:
                 self.r = moved * -2.0
                 self.done += 1
@@ -119,3 +127,7 @@ class TwentyFortyEightEnvironment(EpisodicTask, Named):
             self.StartEpisode()
             return True
         return False
+    def printBoard(self):
+        for i in range(5):
+            print str(int(self.game.state[i][0])).ljust(7), str(int(self.game.state[i][1])).ljust(7), str(int(self.game.state[i][2])).ljust(7), str(int(self.game.state[i][3])).ljust(7), str(int(self.game.state[i][4])).ljust(7)
+                
