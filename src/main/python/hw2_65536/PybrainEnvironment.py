@@ -7,6 +7,9 @@ from ai import *
 
 import numpy
 
+#Game types - 1=AlphaBeta, 2=MonteCarlo, 3=Nicola, 4=Randomiser, 5=AlphaBetaRecursive
+GAME_TYPE = 5
+
 class TwentyFortyEightEnvironment(EpisodicTask, Named):
 
     # The number of actions
@@ -29,12 +32,32 @@ class TwentyFortyEightEnvironment(EpisodicTask, Named):
         self.cumulativeReward = 0
         self.lastScore = 0
         self.meanScore = 0
+        if GAME_TYPE==1:
+            print "AI Type: AlphaBeta"
+        elif GAME_TYPE==2:
+            print "AI Type: MonteCarlo"
+        elif GAME_TYPE==3:
+            print "AI Type: Nicola"
+        elif GAME_TYPE==4:
+            print "AI Type: Randomizer"
+        elif GAME_TYPE==5:
+            print "AI Type: AlphaBetaRecursive"
 
     def reset(self):
         self.game = Game()
         self.done = 0
         self.startState = self.game.state
-        self.ai = MonteCarlo()
+        if GAME_TYPE==1:
+            self.ai = AlphaBeta(self.game)
+        elif GAME_TYPE==2:
+            self.ai = MonteCarlo()
+        elif GAME_TYPE==3:
+            self.ai = Nicola(self.game)
+        elif GAME_TYPE==4:
+            self.ai = Randomizer()
+        elif GAME_TYPE==5:
+            self.ai = AlphaBetaRecursive()
+    
     
     def getObservation(self):
         return self.game.state.flatten()
@@ -50,11 +73,19 @@ class TwentyFortyEightEnvironment(EpisodicTask, Named):
             
             # Try all possible moves
             # Alpha-Beta or Minimax goes here to choose a better move rather than just the first one it can.
-            #actionToSelect = self.alphaBeta(5, 1) #alphaBeta to choose best direction
-            #actionToSelect = self.ai.nextMove(5,1)
-            actionToSelect = self.ai.nextMove(self.game, 1)
+            if GAME_TYPE==1:
+                actionToSelect = self.ai.nextMove(5,1)
+            elif GAME_TYPE==2:
+                actionToSelect = self.ai.nextMove(self.game,1)
+            elif GAME_TYPE==3:
+                actionToSelect = self.ai.nextMove()
+            elif GAME_TYPE==4:
+                actionToSelect = self.ai.nextMove(1,4)
+            elif GAME_TYPE==5:
+                actionToSelect = self.ai.nextMove(5)
+                
             #print actionToSelect
-            print 'ACTION TO SELECT: ', actionToSelect
+            #print 'ACTION TO SELECT: ', actionToSelect
             moved = self.game.move( self.action_list[actionToSelect - 1] )
 
             
