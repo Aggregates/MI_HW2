@@ -29,6 +29,8 @@ class TwentyFortyEightEnvironment(EpisodicTask, Named):
     maxGameBlock = 0
     minute = datetime.now().minute
     startTime = datetime.now()
+    abDepth = 1
+    moveCount = 0
 
     def __init__(self):
         self.nActions = len(self.action_list)
@@ -92,10 +94,6 @@ class TwentyFortyEightEnvironment(EpisodicTask, Named):
             #print 'ACTION TO SELECT: ', actionToSelect
             moved = self.game.move( self.action_list[actionToSelect - 1] )
             
-            if(self.minute != datetime.now().minute and VIS_DEBUG ==1):
-                self.timestamp()
-                self.printBoard("Minute Update")    
-                self.minute = datetime.now().minute
                 
 
             if(self.game.max_block > self.maxGameBlock and VIS_DEBUG ==1):
@@ -127,8 +125,6 @@ class TwentyFortyEightEnvironment(EpisodicTask, Named):
         if self.done > 200 or self.game.over or self.game.won and self.resetOnSuccess:
             if(VIS_DEBUG ==1):
                 print ""
-                print "**** END GAME **** done=", self.done, self.game.over, self.game.won
-                self.printBoard('End Game')
             if self.game.max_block > self.maxGameBlock:
                 self.maxGameBlock = self.game.max_block
             self.lastScore = self.cumulativeReward
@@ -141,7 +137,6 @@ class TwentyFortyEightEnvironment(EpisodicTask, Named):
         print "----------------------- ", message, "  -------------------------------------"
         for i in range(5):
             print str(int(self.game.state[i][0])).ljust(7), str(int(self.game.state[i][1])).ljust(7), str(int(self.game.state[i][2])).ljust(7), str(int(self.game.state[i][3])).ljust(7), str(int(self.game.state[i][4])).ljust(7)
-        print "----------------------- End", message, "  ----------------------------------"
         
     def timestamp(self):
         print ""
@@ -149,4 +144,3 @@ class TwentyFortyEightEnvironment(EpisodicTask, Named):
         time_d = now - self.startTime
         time_d_min = int(time_d.total_seconds() / 60)
         time_d_sec = int(time_d.total_seconds() % 60)
-        print "*** Time Elapsed: ", time_d_min, "min", time_d_sec,"sec ****"
