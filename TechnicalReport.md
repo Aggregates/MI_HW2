@@ -93,19 +93,55 @@ is placed 90% of the time whereas a four is placed 10% of the time).
 
 Where these algorithms do not necessarily carry weight is in the single-player game space. Games like, Sudoku, crosswords 
 and tile puzzles, tend to lend themselves more to search algorithms. Brute force searches such as depth-first, bredth-first
-or iterative deepening search all possible avenues. Smarter heuristic searches such as A*, attempt to use a smarter
-approach wich is generally faster. Further, local searches such as Hillclimb take an iterative approach, finding a best
-local maximum and moving forward.
+or iterative deepening search all possible avenues. Heuristic searches such as A*, attempt to use a smarter approach 
+which is also generally faster. Further, local searches such as Hillclimb take an iterative approach, finding a best
+local maximum and moving forward incrementally.
 
 # Question 2 - 65536 AI #
 
 `TODO`
 
-* Develop 2 solutions to solve 65536. Use techniques covered in lectures
 * Clear description of learning or search algorithms (1 mark)
 * Discussion of tuning process and developing appropriate representations of environment (1 Mark)
-* Explanation of features of problem which make solution appropriate (1 Mark)
-* High Level pseudocode of changes to standard algorithms
+
+## Explanation Of The Problem ##
+`TODO Explanation of features of problem which make solution appropriate (1 Mark)`
+In implementing an appropriate solution for the AI to solve the game, it was necessary to focus on two main problems.
+1. Provide some means for the AI to assess a "good" or "bad" position after a move.
+2. Trade off between the speed of the algorithm and its efficiency. This is managed through the depth variable which guides
+the AI in how far into the future to look for an optimal solution.
+
+As discussed when examining previous implementations and solutions, this game lends itself well to modelling as a two-player, 
+adversarial game. That being the case, it is most appropriate to use depth search algorithms such as Minimax, Alpha-Beta
+or Monte Carlo. By specifying the depth at the beginning of the search, we can limit how long the AI spends on looking 
+for an answer.  
+
+## Learning and Search Algorithm Pseudocode ##
+
+This section will show pseudocode of the various algorithms used by the agents. The general structure of these algorithms
+ can be found in various implementations and has also been derived from information in lectures.
+ 
+### Alpha-Beta Pruning ###
+This search algorithm combines the heuristic calculation of a particular game position with alpha-beta pruning top improve
+search time.  
+```python
+  def alphabeta(node, depth, alpha, beta, player)
+      if depth=0 or node is terminal:
+          return heuristic value of node
+      if player = max:
+          for each child of node:
+              alpha = max(alpha, alphabeta(child, depth-1, alpha, beta, min)
+              if beta <= alpha:
+                break
+          return alpha
+      else:
+          for each child of node:
+              beta = min(beta, alphabeta(child, depth-1, alpha, beta, max)
+              if beta <= alpha:
+                  break
+          return beta
+  ```     
+ 
 * Two working agents with execute instructions (3 Marks)
 * Conduct comparison of agents and report and discuss their outcome
 
