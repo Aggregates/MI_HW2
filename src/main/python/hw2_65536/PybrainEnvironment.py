@@ -10,6 +10,7 @@ import numpy
 
 #Game types - 1=AlphaBeta, 2=MonteCarlo, 3=Nicola, 4=Randomiser, 5=AlphaBetaRecursive
 GAME_TYPE = 5
+VIS_DEBUG = 1
 
 class TwentyFortyEightEnvironment(EpisodicTask, Named):
 
@@ -27,6 +28,7 @@ class TwentyFortyEightEnvironment(EpisodicTask, Named):
     game = None
     maxGameBlock = 0
     minute = datetime.now().minute
+    startTime = datetime.now()
 
     def __init__(self):
         self.nActions = len(self.action_list)
@@ -84,18 +86,21 @@ class TwentyFortyEightEnvironment(EpisodicTask, Named):
             elif GAME_TYPE==4:
                 actionToSelect = self.ai.nextMove(1,4)
             elif GAME_TYPE==5:
-                actionToSelect = self.ai.nextMove(2)
+                actionToSelect = self.ai.nextMove(3)
                 
             #print actionToSelect
             #print 'ACTION TO SELECT: ', actionToSelect
             moved = self.game.move( self.action_list[actionToSelect - 1] )
             
-            if(self.minute != datetime.now().minute):
-                self.printBoard()
+            if(self.minute != datetime.now().minute and VIS_DEBUG ==1):
+                self.timestamp()
+                self.printBoard("Minute Update")    
                 self.minute = datetime.now().minute
+                
 
-            if(self.game.max_block > self.maxGameBlock):
+            if(self.game.max_block > self.maxGameBlock and VIS_DEBUG ==1):
                 self.maxGameBlock = self.game.max_block
+                self.timestamp()
                 print "Max Block:", self.maxGameBlock
             if not moved or self.game.won:
                 self.r = moved * -2.0
@@ -119,7 +124,11 @@ class TwentyFortyEightEnvironment(EpisodicTask, Named):
         self.done = 0
         
     def isFinished(self):
-        if self.done > 20 or self.game.over or self.game.won and self.resetOnSuccess:
+        if self.done > 200 or self.game.over or self.game.won and self.resetOnSuccess:
+            if(VIS_DEBUG ==1):
+                print ""
+                print "**** END GAME **** done=", self.done, self.game.over, self.game.won
+                self.printBoard('End Game')
             if self.game.max_block > self.maxGameBlock:
                 self.maxGameBlock = self.game.max_block
             self.lastScore = self.cumulativeReward
@@ -127,7 +136,17 @@ class TwentyFortyEightEnvironment(EpisodicTask, Named):
             self.StartEpisode()
             return True
         return False
-    def printBoard(self):
+        
+    def printBoard(self, message):
+        print "----------------------- ", message, "  -------------------------------------"
         for i in range(5):
             print str(int(self.game.state[i][0])).ljust(7), str(int(self.game.state[i][1])).ljust(7), str(int(self.game.state[i][2])).ljust(7), str(int(self.game.state[i][3])).ljust(7), str(int(self.game.state[i][4])).ljust(7)
-                
+        print "----------------------- End", message, "  ----------------------------------"
+        
+    def timestamp(self):
+        print ""
+        now = datetime.now()
+        time_d = now - self.startTime
+        time_d_min = int(time_d.total_seconds() / 60)
+        time_d_sec = int(time_d.total_seconds() % 60)
+        print "*** Time Elapsed: ", time_d_min, "min", time_d_sec,"sec ****"
