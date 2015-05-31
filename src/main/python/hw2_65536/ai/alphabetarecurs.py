@@ -1,5 +1,7 @@
 from hw2_65536.game import *
 from math import *
+from copy import deepcopy
+from collections import namedtuple
 
 class AlphaBetaRecursive(object):
 
@@ -7,25 +9,24 @@ class AlphaBetaRecursive(object):
         self.game = game
 
     def nextMove(self, maxdepth):
-        direction = 0
-        bestscore = 0
         alpha = 0
         beta = -1000000
 
-        best = abRecursive(self.game, maxdepth, alpha, beta)
+        direction = self.abRecursive(self.game,maxdepth, maxdepth, alpha, beta)
         
-        return best[0]
+        return direction
         
-    def abRecursive(self, game, maxdepth, alpha, beta):
-        best = (0,0)
+    def abRecursive(self, game, depth, maxdepth, alpha, beta):
+        bestscore = 0
+        bestdirection = 1
         
-        if self.game.over:
-            if self.game.won:
-                best[1] = 100000
+        if game.over:
+            if game.won:
+                bestscore = 100000
             else:
-                best[1] = min(self.game.score,1)
+                bestscore = min(game.score,1)
         elif depth == 0:
-            best[1] = self.heuristicScore()
+            bestscore = self.heuristicScore(game)
         else:
             for x in range(1,5): # Game.Direction
                 tempGame = deepcopy(game)
@@ -34,48 +35,53 @@ class AlphaBetaRecursive(object):
                 if moved==0:
                     continue
 
-                tmp = self.nextMove(depth-1,0)
+                tmp = self.abRecursive(tempGame, depth-1, maxdepth, alpha, beta)
                 
-                if tmp[1] > alpha:
-                    alpha = tmp[1]
-                    best[0] = x
-            best[1] = alpha
-
-        return best[0]
+                if (tmp > alpha):
+                    alpha = tmp
+                    bestdirection = x
+            bestscore = alpha
+        if depth==maxdepth:
+            return bestdirection
+        else:
+            return bestscore
 
     # calculate heuristic score based on game score, number of empty cells and clustering score
-    def heuristicScore(self):
-        score = self.game.score+(log(self.game.score*self.numberEmptyCells()))-self.clusterScore()
-        return max(score,self.game.score)#ensure a positive result returned
+    def heuristicScore(self, game):
+        if(game.score == 0):
+            return 0
+        score = game.score + log(game.score * self.numberEmptyCells(game)) - self.clusterScore(game)
+        
+        return max(score,game.score) #ensure a positive result returned
 
-    def clusterScore(self):
+    def clusterScore(self, game):
         clusterScore = 0
         neighbours = (-1, 0, 1)
         for i in range(5):
             for j in range(5):
-                if self.game.state[i][j] == 0:
+                if game.state[i][j] == 0:
                     continue
                 numOfNeighbours = 0
                 sum = 0
                 for k in neighbours:
                     x = i + k
-                    if x < 0 or x > 5:
+                    if x < 0 or x >= 5:
                         continue
                     for l in neighbours:
                         y = j + l
-                        if y < 0 or y > 5:
+                        if y < 0 or y >= 5:
                             continue
-                        if self.game.state[x][y] > 0:
+                        if game.state[x][y] > 0:
                             numOfNeighbours+=1
-                            sum = abs(self.game.state[i][j]-self.game.state[x][y])
+                            sum = abs(game.state[i][j]-game.state[x][y])
 
                 clusterScore += sum/numOfNeighbours
 
         return clusterScore
 
-    def numberEmptyCells(self):
+    def numberEmptyCells(self, game):
         numberEmptyCells = 0
-        available = self.game.get_available_cells()
+        available = game.get_available_cells()
         for x in range(available.__sizeof__()):
             if x==0:
                 numberEmptyCells += 1

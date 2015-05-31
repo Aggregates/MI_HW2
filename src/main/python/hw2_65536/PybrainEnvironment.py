@@ -56,7 +56,7 @@ class TwentyFortyEightEnvironment(EpisodicTask, Named):
         elif GAME_TYPE==4:
             self.ai = Randomizer()
         elif GAME_TYPE==5:
-            self.ai = AlphaBetaRecursive()
+            self.ai = AlphaBetaRecursive(self.game)
     
     
     def getObservation(self):
@@ -82,7 +82,7 @@ class TwentyFortyEightEnvironment(EpisodicTask, Named):
             elif GAME_TYPE==4:
                 actionToSelect = self.ai.nextMove(1,4)
             elif GAME_TYPE==5:
-                actionToSelect = self.ai.nextMove(5)
+                actionToSelect = self.ai.nextMove(4)
                 
             #print actionToSelect
             #print 'ACTION TO SELECT: ', actionToSelect
