@@ -10,7 +10,7 @@ import numpy
 class TwentyFortyEightEnvironment(EpisodicTask, Named):
 
     # The number of actions
-    action_list = ( Direction.UP, Direction.LEFT, Direction.DOWN, Direction.RIGHT )
+    action_list = (Direction.LEFT,Direction.RIGHT,Direction.UP,Direction.DOWN)
     nActions = len(action_list) # 4
     
     nSenses = 5 * 5
