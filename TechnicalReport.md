@@ -176,7 +176,10 @@ move function. This is then repeated for each possible move of the game.
 
     def montecarlo(game, numberOfGames)
         for each possible move
-            play numberOfGames to completion with random moves and append to list
+            play numberOfGames to completion by the following rules:
+                make an initial move to calculate the effectiveness of
+                continue playing randomnly until the game concludes
+                append the result of each final game score to a total
             
         select bestOutcome from all results
         select the opening move that produced the bestOutcome
@@ -197,12 +200,14 @@ We found that by limiting the depth search early in the game, the AI was able to
 with other high value tiles in favourable positions. 
 
 ## Comparison of Agents ##
-`TODO * Conduct comparison of agents and report and discuss their outcome`
+
 * alphabetarecurs found to be the most effective agorithm/agent
 * able to achieve the 65536 tile approximately 33% of the time at a depth of 4
 * shallower searches, though faster, were only ever able to achieve a maximum tile of 32768
 * interestingly, deeper searches did not necessarily improve these percentages, with large numbers of games still "dying" before
 reaching a winning position.
+* Our implementation of the monte carlo algorithm did not yield the high results as expected. Our implementation has been based of the Monte Carlo Simulator ([Python Programming .net, 2014](http://pythonprogramming.net/monte-carlo-simulator-python/)) using the random move generator as created in our Randomiser AI. We expect that the more games it plays to make its decision will take considerably more time to run. With a `numberOfGames = 2`, the AI was ble to achieve scores of 2048 in 10 minuts, however it would soon lose. Due to the randomiser's nature, using more games in the algorithm should spread the distribution of the direction to move in, making a singular choice more difficult as all directions become likely candidates.
+
 
 # Final Comments #  
 It is clear that the agents presented, though able to occasionally reach the 65536 tile, are still less than optimal. Some factors 
@@ -217,8 +222,6 @@ would allow the AI to make better judgements about better moves to make
 to enable us to see the current state of the board and assess the performance of the algorithms/agents. If we had been able to
 connect the agent to one of the browser-based implementations of the game (such as has been done with the 2048 form) it would have 
 been considerably easier to see exactly the current state and follow the moves chosen by the AI.
-
-3. 
   
 
 
@@ -234,3 +237,4 @@ DatumBox, 2014
 5. Various Contributors, *What is the optimal algorithm for the game 2048?*, [http://stackoverflow.com/questions/22342854/what-is-the-optimal-algorithm-for-the-game-2048],
 StackOverflow, 2015
 6. World Of Computing, *Articles on Artificial Intelligence*, [http://intelligence.worldofcomputing.net/], Artificial Intelligence, 2015
+7. Python Programming .net, *Monte Carlo Simulator*, http://pythonprogramming.net/monte-carlo-simulator-python/, Python Programming .net 2014
