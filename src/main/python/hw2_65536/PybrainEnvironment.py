@@ -29,9 +29,10 @@ class TwentyFortyEightEnvironment(EpisodicTask, Named):
     done = 0
     game = None
     maxGameBlock = 0
+    maxRunBlock = 0
     minute = datetime.now().minute
     startTime = datetime.now()
-    abDepth = 4
+    abDepth = 3
     moveCount = 0
 
     def __init__(self):
@@ -41,7 +42,7 @@ class TwentyFortyEightEnvironment(EpisodicTask, Named):
         self.lastScore = 0
         self.meanScore = 0
         if GAME_TYPE==1:
-            print "AI Type: AlphaBeta"
+            print "AI Type: AlphaBeta with SearchDepth=", self.abDepth
         elif GAME_TYPE==2:
             print "AI Type: MonteCarlo"
         elif GAME_TYPE==3:
@@ -49,7 +50,8 @@ class TwentyFortyEightEnvironment(EpisodicTask, Named):
         elif GAME_TYPE==4:
             print "AI Type: Randomiser"
         elif GAME_TYPE==5:
-            print "AI Type: AlphaBetaRecursive"
+            print "AI Type: AlphaBetaRecursive with SearchDepth=", self.abDepth
+            
 
     def reset(self):
         self.game = Game()
@@ -122,10 +124,10 @@ class TwentyFortyEightEnvironment(EpisodicTask, Named):
                 #self.minute = datetime.now().minute
                 
 
-            if(self.game.max_block > self.maxGameBlock and VIS_DEBUG ==1):
-                self.maxGameBlock = self.game.max_block
+            if(self.game.max_block > self.maxRunBlock and VIS_DEBUG ==1):
+                self.maxRunBlock = self.game.max_block
                 self.timestamp()
-                print "Max Block:", self.maxGameBlock
+                print "Max Block:", self.maxRunBlock
             if not moved or self.game.won:
                 self.r = moved * -2.0
                 self.done += 1
@@ -148,6 +150,7 @@ class TwentyFortyEightEnvironment(EpisodicTask, Named):
         self.done = 0
         self.startTime = datetime.now()
         self.moveCount = 0
+        self.maxRunBlock = 0
         #if(self.episode % 5 == 0):
         #    self.abDepth += 1
         #    print 'Seach Depth = ', self.abDepth
@@ -162,6 +165,8 @@ class TwentyFortyEightEnvironment(EpisodicTask, Named):
                 self.printBoard('End Game After ' + str(self.moveCount) + ' moves')
             if self.game.max_block > self.maxGameBlock:
                 self.maxGameBlock = self.game.max_block
+            if self.game.max_block > self.maxRunBlock:
+                self.maxRunBlock = self.game.max_block
             self.lastScore = self.cumulativeReward
             self.meanScore = (0.99 * self.meanScore) + (0.01 * self.cumulativeReward)
             self.StartEpisode()
