@@ -97,24 +97,32 @@ or iterative deepening search all possible avenues. Heuristic searches such as A
 which is also generally faster. Further, local searches such as Hillclimb take an iterative approach, finding a best
 local maximum and moving forward incrementally.
 
+`TODO - more info on game tree search in single player games`
+
 # Question 2 - 65536 AI #
 
-`TODO`
-
-* Clear description of learning or search algorithms (1 mark)
-* Discussion of tuning process and developing appropriate representations of environment (1 Mark)
+`TODO* Discussion of tuning process and developing appropriate representations of environment (1 Mark)`
 
 ## Explanation Of The Problem ##
-`TODO Explanation of features of problem which make solution appropriate (1 Mark)`
-In implementing an appropriate solution for the AI to solve the game, it was necessary to focus on two main problems.
-1. Provide some means for the AI to assess a "good" or "bad" position after a move.
+
+The majority of standard AI solution in place for the 2048 version of the game have been discussed in question 1. These
+approaches generally tend to model the game play strategies of human players of the game, such as ordering tiles in
+anticipation of a future merge or ensuring large valued tiles are kept towards the edge of the game space. It was observed 
+that these approaches worked well for 2048, though not necessarily for this larger form of the game. Even with its smaller 
+board dimensions (4x4 as opposed to 5x5), the reward or penalty for a less than optimal move is minimised due to the shorter 
+overall runtime of the game. In our implementation it was found that bad decisions early on could be magnified once the 
+end-game period approached.
+
+In implementing an appropriate solution for the AI to solve the game, it was necessary to focus on two main problems.  
+1. Provide some means for the AI to assess a "good" or "bad" position after a move.  
 2. Trade off between the speed of the algorithm and its efficiency. This is managed through the depth variable which guides
-the AI in how far into the future to look for an optimal solution.
+the AI in how far into the future to look for an optimal solution.  
 
 As discussed when examining previous implementations and solutions, this game lends itself well to modelling as a two-player, 
-adversarial game. That being the case, it is most appropriate to use depth search algorithms such as Minimax, Alpha-Beta
-or Monte Carlo. By specifying the depth at the beginning of the search, we can limit how long the AI spends on looking 
-for an answer.  
+adversarial game. That being the case, it is most appropriate to use depth search algorithms such as Minimax or Alpha-Beta.
+By specifying the depth at the beginning of the search, we can limit how long the AI spends on looking for an answer. By 
+contrast, using a Monte Carlo approach, the AI uses a specific number of games (which can be altered by the programmer) 
+to effectively try a "brute force" randomised approach to the games. Random moves are attempted for each position 
 
 ## Learning and Search Algorithm Pseudocode ##
 
@@ -123,27 +131,55 @@ This section will show pseudocode of the various algorithms used by the agents. 
  
 ### Alpha-Beta Pruning ###
 This search algorithm combines the heuristic calculation of a particular game position with alpha-beta pruning top improve
-search time.  
-```python
-  def alphabeta(node, depth, alpha, beta, player)
-      if depth=0 or node is terminal:
-          return heuristic value of node
-      if player = max:
-          for each child of node:
-              alpha = max(alpha, alphabeta(child, depth-1, alpha, beta, min)
-              if beta <= alpha:
-                break
-          return alpha
-      else:
-          for each child of node:
-              beta = min(beta, alphabeta(child, depth-1, alpha, beta, max)
-              if beta <= alpha:
-                  break
-          return beta
-  ```     
+search time in discarding the nodes which will not produce a valid result within the bounds. The alpha and beta bounds are
+gradually reduced by examining the heuristic value of the game position at the given depth of the game tree. Obviously a 
+ greater depth requires more searches and therefore takes longer. A balance must be found between performance and 
+ accuracy.
+    
+    def alphabetarecurs(node, depth, max depth, alpha, beta)
+        if depth=0 or node is terminal:
+            return heuristic value of game position
+        
+        if player = max:
+            for each child of node:
+                alpha = max(alpha, alphabeta(child, depth-1, alpha, beta, min)
+                
+                if beta <= alpha:
+                    break
+            return alpha
+        else:
+            for each child of node:
+                beta = min(beta, alphabeta(child, depth-1, alpha, beta, max)
+
+                if beta <= alpha:
+                    break
+            return beta
+
+### Monte Carlo ###
+This approach used in this algorithm uses random sampling of moves in order to decide on the best overall approach each.
+The AI plays a certain number of games for each opening option (as passed in my the programmer) from the current state.
+Moves are then randomly selected and the game played to completion. After all games have been played, the best final scores 
+are compared and the opening move with the best final score is passed back to the move function. This is then repeated 
+ for each move of the game.  
+
+    def montecarlo(game, numberOfGames)
+        for each possible move
+            play numberOfGames to completion with random moves and append to list
+            
+        select bestOutcome from all results
+        select the opening move that produced the bestOutcome
+    return move
  
-* Two working agents with execute instructions (3 Marks)
-* Conduct comparison of agents and report and discuss their outcome
+### Randomiser ###
+This is a simple method which merely uses Python's inbuilt random number generator to choose a direction in which to move.
+This method was created as a baseline with little expectation of any real success. Indeed, the Randomiser was only able to
+consistently achieve scores of around 256 or 512. 
+
+## Tuning Options Applied to Algorithms ## 
+
+
+## Comparison of Agents ##
+`TODO * Conduct comparison of agents and report and discuss their outcome`
 
 
 # References #
