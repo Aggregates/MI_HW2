@@ -6,10 +6,6 @@ COMP3330 - Machine Intelligence - HW2 Technical Report
 * Simon Hartcher - C3185790
 * Rob Logan - C3165020
 
-# Task #
-
-# System Overview #
-
 # Question 1 - Intelligent Agents Literature Review and Discussion #
 
 ## 2048 Artificial Intelligence Implementations ##
@@ -49,23 +45,10 @@ each tile from the average of the differences between surrounding tiles. Thus wh
 is a favourable position resulting in a lower clustering score and less of a "penalty" to the heuristic calculation. 
 An example of a low clustering score can be seen in the position below.
 
-<table>
-  <tr>
-    <td>8</td>
-    <td>16</td> 
-    <td>4</td>
-  </tr>
-  <tr>
-    <td>6</td>
-    <td>8</td> 
-    <td>2</td>
-  </tr>
-    <tr>
-    <td>0</td>
-    <td>4</td> 
-    <td>0</td>
-  </tr>
-</table>  
+|:--:|:--:|:--:|
+| 8 | 16 | 4 |  
+| 6 | 8  | 2 |  
+| 0 | 4  | 0 |  
 
 Other heuristics examined include:
  
@@ -97,11 +80,12 @@ or iterative deepening search all possible avenues. Heuristic searches such as A
 which is also generally faster. Further, local searches such as Hillclimb take an iterative approach, finding a best
 local maximum and moving forward incrementally.
 
-`TODO - more info on game tree search in single player games`
+Though the AI for these games is modelled upon a two-player game, the limited options for the "opponent" (the minimising 
+value) mean that there is very little difference between the min and max states. Unlike games such as checkers, chess or
+even tic-tac-toe, it would be impossible to utilise something like a transposition table (where game states are "remembered" and looked-up 
+rather than calculated anew each time). 
 
 # Question 2 - 65536 AI #
-
-`TODO* Discussion of tuning process and developing appropriate representations of environment (1 Mark)`
 
 ## Explanation Of The Problem ##
 
@@ -127,14 +111,41 @@ to effectively try a "brute force" randomised approach to the games. Random move
 ## Learning and Search Algorithm Pseudocode ##
 
 This section will show pseudocode of the various algorithms used by the agents. The general structure of these algorithms
- can be found in various implementations and has also been derived from information in lectures.
+can be found in various implementations and has also been derived from information in lectures.
+
+### Minimax ###
+Treats the game as a two-player adversarial game rather than a one-player puzzle. The max player chooses the best option
+to maximise it's score, whereas the min player attempts to place a 2 or 4 in the "worst" position available. This
+implementation was found to be too slow to produce any meaningful results.
+
+    def minimax(game, depth, player)
+        if depth==0 or game.over
+            bestscore = heuristic value of game position
+        else
+            if player==max
+                bestscore = smallest negative number
+                newboard = copy board position
+                for each possible move
+                    currentdirection, currentscore = minimax(newboard, depth-1, min)
+                    if currentscore>bestscore
+                        bestscore = currentscore
+                        bestdirection = move
+            else
+                bestscore = largest positive number
+                newboard = copy board position
+                for each available cell in newboard
+                    add a new tile (2 or 4)
+                    currentdirection, currentscore = minimax(newboard, depth-1, max)
+                    if currentscore<bestscore
+                        bestscore = currentscore
+        
+        return bestdirection, bestscore
  
-### Alpha-Beta Pruning ###
+### Minimax with Alpha-Beta Pruning ###
 This search algorithm combines the heuristic calculation of a particular game position with alpha-beta pruning top improve
 search time in discarding the nodes which will not produce a valid result within the bounds. The alpha and beta bounds are
 gradually reduced by examining the heuristic value of the game position at the given depth of the game tree. Obviously a 
- greater depth requires more searches and therefore takes longer. A balance must be found between performance and 
- accuracy.
+greater depth requires more searches and therefore takes longer. A balance must be found between performance and accuracy.
     
     def alphabetarecurs(node, depth, max depth, alpha, beta)
         if depth=0 or node is terminal:
@@ -142,14 +153,14 @@ gradually reduced by examining the heuristic value of the game position at the g
         
         if player = max:
             for each child of node:
-                alpha = max(alpha, alphabeta(child, depth-1, alpha, beta, min)
+                alpha = max(alpha, alphabeta(child, depth-1, alpha, beta)
                 
                 if beta <= alpha:
                     break
             return alpha
         else:
             for each child of node:
-                beta = min(beta, alphabeta(child, depth-1, alpha, beta, max)
+                beta = min(beta, alphabeta(child, depth-1, alpha, beta)
 
                 if beta <= alpha:
                     break
@@ -173,7 +184,7 @@ are compared and the opening move with the best final score is passed back to th
 ### Randomiser ###
 This is a simple method which merely uses Python's inbuilt random number generator to choose a direction in which to move.
 This method was created as a baseline with little expectation of any real success. Indeed, the Randomiser was only able to
-consistently achieve scores of around 256 or 512. 
+consistently achieve scores of around 256 or 512 and only occasionally reaching the 1024 or 2048 tile.
 
 ## Tuning Options Applied to Algorithms ## 
 
