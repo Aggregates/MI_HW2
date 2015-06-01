@@ -26,7 +26,7 @@ program as "minimising".
 
 Thus for Minimax, the AIs observed would scan the current state of the board and make a decision based on the best 
 possible score looking ahead. Even given the fixed number of moves at any given state in the game (up, down, left, right), 
-the AI's were faced with an ever-expanding tree of possibilities, the deeper it would search. So a depth of 5 would take 
+the AIs were faced with an ever-expanding tree of possibilities, the deeper it would search. So a depth of 5 would take 
 approximately 1 second, whereas a depth of 7 ply would last up to 30 seconds. This search time was reduced with the use
 of Alpha-Beta Pruning, which would significantly reduce the number of nodes to evaluate. The deeper the search though, the 
 greater the accuracy, with the deeper searches yielding a 70-80% chance of winning compared to a 3 ply search (20% chance).
@@ -40,7 +40,7 @@ heuristics and there is much debate in the development community around which ap
 Most implementations for the 2048 game use some variation of the actual score on the board at the time. This is often
 combined with a calculation of the number of empty tiles on the board (more empty tiles = more likely favourable move 
 options). In addition to these calculations, one approach studied used a what was called a "clustering score", which 
-returned a figure base on how close or separated values were from each other. This clustering score was calulated for 
+returned a figure base on how close or separated values were from each other. This clustering score was calculated for 
 each tile from the average of the differences between surrounding tiles. Thus when similar values are clustered, this 
 is a favourable position resulting in a lower clustering score and less of a "penalty" to the heuristic calculation. 
 An example of a low clustering score can be seen in the position below.
@@ -201,12 +201,11 @@ with other high value tiles in favourable positions.
 
 ## Comparison of Agents ##
 
-* alphabetarecurs found to be the most effective agorithm/agent
-* able to achieve the 65536 tile approximately 33% of the time at a depth of 4
-* shallower searches, though faster, were only ever able to achieve a maximum tile of 32768
-* interestingly, deeper searches did not necessarily improve these percentages, with large numbers of games still "dying" before
-reaching a winning position.
-* Our implementation of the monte carlo algorithm did not yield the high results as expected. Our implementation has been based of the Monte Carlo Simulator ([Python Programming .net, 2014](http://pythonprogramming.net/monte-carlo-simulator-python/)) using the random move generator as created in our Randomiser AI. We expect that the more games it plays to make its decision will take considerably more time to run. With a `numberOfGames = 2`, the AI was ble to achieve scores of 2048 in 10 minuts, however it would soon lose. Due to the randomiser's nature, using more games in the algorithm should spread the distribution of the direction to move in, making a singular choice more difficult as all directions become likely candidates.
+* alphabetarecurs found to be the most effective algorithm/agent
+    * able to achieve the 65536 tile approximately 33% of the time at a depth of 4
+    * shallower searches, though faster, were only ever able to achieve a maximum tile of 32768
+    * interestingly, deeper searches did not necessarily improve these percentages, with large numbers of games still "dying" before reaching a winning position.
+* Our implementation of the Monte Carlo algorithm did not yield the high results as expected. Our implementation has been based of the Monte Carlo Simulator ([Python Programming .net, 2014](http://pythonprogramming.net/monte-carlo-simulator-python/)) using the random move generator as created in our Randomiser AI. We expect that the more games it plays to make its decision will take considerably more time to run. With a `numberOfGames = 2`, the AI was able to achieve scores of 2048 in 10 minutes, however it would soon lose. Due to the randomiser's nature, using more games in the algorithm should spread the distribution of the direction to move in, making a singular choice more difficult as all directions become likely candidates. Using a combination of heuristics and random moves should improve the effectiveness of this algorithm
 
 
 # Final Comments #  
@@ -238,3 +237,4 @@ DatumBox, 2014
 StackOverflow, 2015
 6. World Of Computing, *Articles on Artificial Intelligence*, [http://intelligence.worldofcomputing.net/], Artificial Intelligence, 2015
 7. Python Programming .net, *Monte Carlo Simulator*, http://pythonprogramming.net/monte-carlo-simulator-python/, Python Programming .net 2014
+8. Caridorc, *Monte Carlo AI in 21 game*, http://codereview.stackexchange.com/questions/67732/monte-carlo-ai-in-21-game, StackOverflow, 2014
