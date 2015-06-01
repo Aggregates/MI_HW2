@@ -18,18 +18,18 @@ which were assigned to reach a conclusion about the positions themselves.
      
 ### Approach Comparison ###
 
-These algorithms of Minimax and Alph-Beta Pruning provide a strong base for the evaluation of two player games. 
+These algorithms of Minimax and Alpha-Beta Pruning provide a strong base for the evaluation of two player games. 
 They are often utilised by AI in games of Chess, Checkers, Tic-Tac-Toe and other similar games. Even in the 
 case of 2048 which on the surface is a one (or zero) player game, these approaches can be applied by visualising 
 the player as trying to "maximise" their score or position and the pseudo-random placement of new tiles by the 
 program as "minimising". 
 
-Thus for Minimax, the AI's observed would scan the current state of the board and make a decision based on the best 
+Thus for Minimax, the AIs observed would scan the current state of the board and make a decision based on the best 
 possible score looking ahead. Even given the fixed number of moves at any given state in the game (up, down, left, right), 
 the AI's were faced with an ever-expanding tree of possibilities, the deeper it would search. So a depth of 5 would take 
 approximately 1 second, whereas a depth of 7 ply would last up to 30 seconds. This search time was reduced with the use
-of Alpha-Beta Pruning, which would significantly reduce the number of nodes to evaluate.The deeper the search though, the 
-greater the accuracy, with the deeper searched yielding a 70-80% chance of winning compared to a 3 ply search (20% chance).
+of Alpha-Beta Pruning, which would significantly reduce the number of nodes to evaluate. The deeper the search though, the 
+greater the accuracy, with the deeper searches yielding a 70-80% chance of winning compared to a 3 ply search (20% chance).
 
 ### Heuristics ###
 
@@ -89,13 +89,14 @@ rather than calculated anew each time).
 
 ## Explanation Of The Problem ##
 
-The majority of standard AI solution in place for the 2048 version of the game have been discussed in question 1. These
+Examples of the standard AI solutions implemented for the 2048 version of the game have been discussed in question 1. These
 approaches generally tend to model the game play strategies of human players of the game, such as ordering tiles in
 anticipation of a future merge or ensuring large valued tiles are kept towards the edge of the game space. It was observed 
-that these approaches worked well for 2048, though not necessarily for this larger form of the game. Even with its smaller 
+that these approaches worked well for 2048, though not necessarily for this larger form of the game. Because of its smaller 
 board dimensions (4x4 as opposed to 5x5), the reward or penalty for a less than optimal move is minimised due to the shorter 
 overall runtime of the game. In our implementation it was found that bad decisions early on could be magnified once the 
-end-game period approached.
+end-game period approached. Thus a randomised approach may be marginally effective (though still sub-optimal) in 2048 and
+completely ineffective for 65536.
 
 In implementing an appropriate solution for the AI to solve the game, it was necessary to focus on two main problems.  
 1. Provide some means for the AI to assess a "good" or "bad" position after a move.  
@@ -111,7 +112,7 @@ to effectively try a "brute force" randomised approach to the games. Random move
 ## Learning and Search Algorithm Pseudocode ##
 
 This section will show pseudocode of the various algorithms used by the agents. The general structure of these algorithms
-can be found in various implementations and has also been derived from information in lectures.
+can be found in the various implementations studied and has also been derived from information in lectures.
 
 ### Minimax ###
 Treats the game as a two-player adversarial game rather than a one-player puzzle. The max player chooses the best option
@@ -167,11 +168,11 @@ greater depth requires more searches and therefore takes longer. A balance must 
             return beta
 
 ### Monte Carlo ###
-This approach used in this algorithm uses random sampling of moves in order to decide on the best overall approach each.
+This approach used in this algorithm uses random sampling of moves in order to decide on the best overall approach for each.
 The AI plays a certain number of games for each opening option (as passed in my the programmer) from the current state.
-Moves are then randomly selected and the game played to completion. After all games have been played, the best final scores 
-are compared and the opening move with the best final score is passed back to the move function. This is then repeated 
- for each move of the game.  
+Moves are then randomly selected and the game played to completion - either a winning position or a loss. After all games 
+have been played, the best final scores are compared and the opening move with the best final score is passed back to the 
+move function. This is then repeated for each possible move of the game.  
 
     def montecarlo(game, numberOfGames)
         for each possible move
@@ -182,15 +183,43 @@ are compared and the opening move with the best final score is passed back to th
     return move
  
 ### Randomiser ###
-This is a simple method which merely uses Python's inbuilt random number generator to choose a direction in which to move.
+This is a simple method which merely uses Python's inbuilt random number selector to choose a direction in which to move.
 This method was created as a baseline with little expectation of any real success. Indeed, the Randomiser was only able to
 consistently achieve scores of around 256 or 512 and only occasionally reaching the 1024 or 2048 tile.
 
 ## Tuning Options Applied to Algorithms ## 
 
+### Dynamic Depth Tuning ###
+It was observed that early in the game it would not always be necessary to search 4 or 5 nodes deep in order select the 
+direction option. Thus a dynamic depth choice algorithm was developed to increase the depth of the search as the game continued. 
+We found that by limiting the depth search early in the game, the AI was able to reach a score of 4096 within 2 minutes, 
+8192 within 5 minutes and so on. We found also that it was more likely to reach a near-to-end game position with a 32768 tile along 
+with other high value tiles in favourable positions. 
 
 ## Comparison of Agents ##
 `TODO * Conduct comparison of agents and report and discuss their outcome`
+* alphabetarecurs found to be the most effective agorithm/agent
+* able to achieve the 65536 tile approximately 33% of the time at a depth of 4
+* shallower searches, though faster, were only ever able to achieve a maximum tile of 32768
+* interestingly, deeper searches did not necessarily improve these percentages, with large numbers of games still "dying" before
+reaching a winning position.
+
+# Final Comments #  
+It is clear that the agents presented, though able to occasionally reach the 65536 tile, are still less than optimal. Some factors 
+to consider for the future include:
+
+1. **Improved Heuristics** - There is a  multitude of different heuristic approaches for assessing the value of the game state
+in the literature available. Many of these heuristics have been shown to work well for the 2048 form of the game, though there 
+is little to be found for different board shapes or larger forms. Improving the heuristic analysis when during decision making
+would allow the AI to make better judgements about better moves to make
+
+2. **Graphical Interface** - We found that a large amount of debugging code was required to be inserted in the PybrainEnvironment.py 
+to enable us to see the current state of the board and assess the performance of the algorithms/agents. If we had been able to
+connect the agent to one of the browser-based implementations of the game (such as has been done with the 2048 form) it would have 
+been considerably easier to see exactly the current state and follow the moves chosen by the AI.
+
+3. 
+  
 
 
 # References #
@@ -204,3 +233,4 @@ University of Strathclyde, 2014
 DatumBox, 2014
 5. Various Contributors, *What is the optimal algorithm for the game 2048?*, [http://stackoverflow.com/questions/22342854/what-is-the-optimal-algorithm-for-the-game-2048],
 StackOverflow, 2015
+6. World Of Computing, *Articles on Artificial Intelligence*, [http://intelligence.worldofcomputing.net/], Artificial Intelligence, 2015
