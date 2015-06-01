@@ -18,7 +18,7 @@ which were assigned to reach a conclusion about the positions themselves.
      
 ### Approach Comparison ###
 
-Thes algorithms of Minimax and Alph-Beta Pruning provide a strong base for the evaluation of two player games. 
+These algorithms of Minimax and Alph-Beta Pruning provide a strong base for the evaluation of two player games. 
 They are often utilised by AI in games of Chess, Checkers, Tic-Tac-Toe and other similar games. Even in the 
 case of 2048 which on the surface is a one (or zero) player game, these approaches can be applied by visualising 
 the player as trying to "maximise" their score or position and the pseudo-random placement of new tiles by the 
