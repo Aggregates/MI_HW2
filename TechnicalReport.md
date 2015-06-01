@@ -55,6 +55,8 @@ Other heuristics examined include:
 * **Monotonicity** - involves the AI trying to "ensure that the values of the tiles are all either increasing or decreasing 
 along both the left/right and up/down directions" [(Stack Overflow, 2014)](http://stackoverflow.com/questions/22342854/what-is-the-optimal-algorithm-for-the-game-2048/22389702#22389702)
 
+![Monotonicity] (http://2048strategy.com/wp-content/uploads/2014/03/Oce4N.png)
+
 * **Weighting Matrix** - creation of a matrix the same size as the board state with higher weightings towards one corner and lower
  diagonally opposite. This tends to force the AI to push larger tiles towards the higher weights and smaller tiles towards the
  lower weights. [(Yiyuan,2014)](https://codemyroad.wordpress.com/2014/05/14/2048-ai-the-intelligent-bot/)  An example can be seen below:  
@@ -98,7 +100,8 @@ overall runtime of the game. In our implementation it was found that bad decisio
 end-game period approached. Thus a randomised approach may be marginally effective (though still sub-optimal) in 2048 and
 completely ineffective for 65536.
 
-In implementing an appropriate solution for the AI to solve the game, it was necessary to focus on two main problems.  
+In implementing an appropriate solution for the AI to solve the game, it was necessary to focus on two main problems.
+  
 1. Provide some means for the AI to assess a "good" or "bad" position after a move.  
 2. Trade off between the speed of the algorithm and its efficiency. This is managed through the depth variable which guides
 the AI in how far into the future to look for an optimal solution.  
